@@ -1,18 +1,19 @@
-'use client'
+'use client';
 
+import {useCallback, useMemo, useState} from 'react';
+import {CircularProgress} from '@mui/material';
+import {useDeleteDocument, useDeleteFolder, useDocuments, useFolders} from '@/hooks';
+import {DocumentListItem, DocumentListItemEnum, SortField, SortOrder} from '@/types';
 import Table from "@/components/features/table/Table";
-import {DocumentListItem, SortField, SortOrder} from "@/types";
-import {useCallback, useMemo, useState} from "react";
-import {useDocuments, useFolders} from "@/hooks";
 import Toolbar from "@/components/features/toolbar/Toolbar";
 import Pagination from "@/components/features/pagination/Pagination";
 import Search from "@/components/features/search/Search";
-import {debounce} from "@/lib";
+
 import CreateFolder from "@/components/features/dialog/CreateFolder";
 import UploadFiles from "@/components/features/dialog/UploadFiles";
+import {debounce} from "@/lib";
 
 export default function DocumentsPage() {
-
   const [searchQuery, setSearchQuery] = useState('');
   const [selected, setSelected] = useState<number[]>([]);
   const [sortField, setSortField] = useState<SortField>(SortField.Name);
@@ -22,45 +23,45 @@ export default function DocumentsPage() {
   const [createFolderOpen, setCreateFolderOpen] = useState(false);
   const [uploadFilesOpen, setUploadFilesOpen] = useState(false);
 
-  const { data: folders, isLoading: foldersLoading } = useFolders();
-  const { data: documents, isLoading: documentsLoading } = useDocuments();
-  // const deleteFolder = useDeleteFolder();
-  // const deleteDocument = useDeleteDocument();
+  const {data: folders, isLoading: foldersLoading} = useFolders();
+  const {data: documents, isLoading: documentsLoading} = useDocuments();
+  const deleteFolder = useDeleteFolder();
+  const deleteDocument = useDeleteDocument();
 
   // Combine folders and documents into a single list
   const allItems: DocumentListItem[] = useMemo(() => {
     const items: DocumentListItem[] = [];
 
-    // if (folders) {
-    //   items.push(
-    //     ...folders
-    //       .filter((f) => !f.is_deleted)
-    //       .map((folder) => ({
-    //         id: folder.id,
-    //         name: folder.name,
-    //         type: 'folder' as const,
-    //         created_by: folder.created_by,
-    //         created_at: folder.created_at,
-    //         parent_id: folder.parent_id,
-    //       }))
-    //   );
-    // }
-    //
-    // if (documents) {
-    //   items.push(
-    //     ...documents
-    //       .filter((d) => !d.is_deleted)
-    //       .map((doc) => ({
-    //         id: doc.id,
-    //         name: doc.name,
-    //         type: 'document' as const,
-    //         created_by: doc.created_by,
-    //         created_at: doc.created_at,
-    //         file_size_bytes: doc.file_size_bytes,
-    //         folder_id: doc.folder_id,
-    //       }))
-    //   );
-    // }
+    if (folders) {
+      items.push(
+        ...folders
+          .filter((f) => !f.is_deleted)
+          .map((folder) => ({
+            id: folder.id,
+            name: folder.name,
+            type: DocumentListItemEnum.Folder,
+            created_by: folder.created_by,
+            created_at: folder.created_at,
+            parent_id: folder.parent_id,
+          }))
+      );
+    }
+
+    if (documents) {
+      items.push(
+        ...documents
+          .filter((d) => !d.is_deleted)
+          .map((doc) => ({
+            id: doc.id,
+            name: doc.name,
+            type: DocumentListItemEnum.Document,
+            created_by: doc.created_by,
+            created_at: doc.created_at,
+            file_size_bytes: doc.file_size_bytes,
+            folder_id: doc.folder_id,
+          }))
+      );
+    }
 
     return items;
   }, [folders, documents]);
@@ -105,14 +106,14 @@ export default function DocumentsPage() {
     return sortedItems.slice(startIndex, startIndex + rowsPerPage);
   }, [sortedItems, page, rowsPerPage]);
 
-  // // Debounced search handler
-  // const debouncedSearch = useCallback(
-  //   debounce((value: string) => {
-  //     setSearchQuery(value);
-  //     setPage(1); // Reset to first page on search
-  //   }, 300),
-  //   []
-  // );
+  // Debounced search handler
+  const debouncedSearch = useCallback(
+    debounce((value: string) => {
+      setSearchQuery(value);
+      setPage(1); // Reset to first page on search
+    }, 300),
+    []
+  );
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -158,25 +159,23 @@ export default function DocumentsPage() {
     if (!confirm(`Are you sure you want to delete "${item.name}"?`)) return;
 
     try {
-      // if (item.type === 'folder') {
-      //   await deleteFolder.mutateAsync(item.id);
-      // } else {
-      //   await deleteDocument.mutateAsync(item.id);
-      // }
+      if (item.type === 'folder') {
+        await deleteFolder.mutateAsync(item.id);
+      } else {
+        await deleteDocument.mutateAsync(item.id);
+      }
     } catch (error) {
       console.error('Failed to delete item:', error);
     }
   };
 
-
-  // Debounced search handler
-  const debouncedSearch = useCallback(
-    debounce((value: string) => {
-      setSearchQuery(value);
-      setPage(1); // Reset to first page on search
-    }, 300),
-    []
-  );
+  if (foldersLoading || documentsLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <CircularProgress/>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-zinc-50 p-8">
@@ -187,7 +186,7 @@ export default function DocumentsPage() {
         />
 
         <div className="mb-4">
-          <Search value={searchQuery} onChange={debouncedSearch} />
+          <Search value={searchQuery} onChange={debouncedSearch}/>
         </div>
 
         <Table
