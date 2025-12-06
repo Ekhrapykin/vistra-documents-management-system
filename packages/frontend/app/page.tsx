@@ -1,65 +1,190 @@
-import Image from "next/image";
+'use client'
 
-export default function Home() {
+import DocumentsTable from "@/components/features/documents-table/DocumentsTable";
+import {DocumentListItem, SortField, SortOrder} from "@/types";
+import {useMemo, useState} from "react";
+import {useDocuments, useFolders} from "@/hooks";
+
+export default function DocumentsPage() {
+
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selected, setSelected] = useState<number[]>([]);
+  const [sortField, setSortField] = useState<SortField>(SortField.Name);
+  const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.Asc);
+  const [page, setPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [createFolderOpen, setCreateFolderOpen] = useState(false);
+  const [uploadFilesOpen, setUploadFilesOpen] = useState(false);
+
+  const { data: folders, isLoading: foldersLoading } = useFolders();
+  const { data: documents, isLoading: documentsLoading } = useDocuments();
+  // const deleteFolder = useDeleteFolder();
+  // const deleteDocument = useDeleteDocument();
+
+  // Combine folders and documents into a single list
+  const allItems: DocumentListItem[] = useMemo(() => {
+    const items: DocumentListItem[] = [];
+
+    // if (folders) {
+    //   items.push(
+    //     ...folders
+    //       .filter((f) => !f.is_deleted)
+    //       .map((folder) => ({
+    //         id: folder.id,
+    //         name: folder.name,
+    //         type: 'folder' as const,
+    //         created_by: folder.created_by,
+    //         created_at: folder.created_at,
+    //         parent_id: folder.parent_id,
+    //       }))
+    //   );
+    // }
+    //
+    // if (documents) {
+    //   items.push(
+    //     ...documents
+    //       .filter((d) => !d.is_deleted)
+    //       .map((doc) => ({
+    //         id: doc.id,
+    //         name: doc.name,
+    //         type: 'document' as const,
+    //         created_by: doc.created_by,
+    //         created_at: doc.created_at,
+    //         file_size_bytes: doc.file_size_bytes,
+    //         folder_id: doc.folder_id,
+    //       }))
+    //   );
+    // }
+
+    return items;
+  }, [folders, documents]);
+
+  // Filter items based on search query
+  const filteredItems = useMemo(() => {
+    if (!searchQuery.trim()) return allItems;
+
+    const query = searchQuery.toLowerCase();
+    return allItems.filter(
+      (item) =>
+        item.name.toLowerCase().includes(query) ||
+        item.created_by.toLowerCase().includes(query)
+    );
+  }, [allItems, searchQuery]);
+
+  // Sort items
+  const sortedItems = useMemo(() => {
+    const items = [...filteredItems];
+
+    items.sort((a, b) => {
+      let aValue: any = a[sortField];
+      let bValue: any = b[sortField];
+
+      // Handle undefined values for file_size_bytes in folders
+      if (sortField === 'file_size_bytes') {
+        aValue = aValue ?? 0;
+        bValue = bValue ?? 0;
+      }
+
+      if (aValue < bValue) return sortOrder === 'asc' ? -1 : 1;
+      if (aValue > bValue) return sortOrder === 'asc' ? 1 : -1;
+      return 0;
+    });
+
+    return items;
+  }, [filteredItems, sortField, sortOrder]);
+
+  // Paginate items
+  const paginatedItems = useMemo(() => {
+    const startIndex = (page - 1) * rowsPerPage;
+    return sortedItems.slice(startIndex, startIndex + rowsPerPage);
+  }, [sortedItems, page, rowsPerPage]);
+
+  // // Debounced search handler
+  // const debouncedSearch = useCallback(
+  //   debounce((value: string) => {
+  //     setSearchQuery(value);
+  //     setPage(1); // Reset to first page on search
+  //   }, 300),
+  //   []
+  // );
+
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      setSortOrder(sortOrder === SortOrder.Asc ? SortOrder.Desc : SortOrder.Asc);
+    } else {
+      setSortField(field);
+      setSortOrder(SortOrder.Asc);
+    }
+  };
+
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      setSelected(paginatedItems.map((item) => item.id));
+    } else {
+      setSelected([]);
+    }
+  };
+
+  const handleSelectOne = (id: number, checked: boolean) => {
+    if (checked) {
+      setSelected([...selected, id]);
+    } else {
+      setSelected(selected.filter((itemId) => itemId !== id));
+    }
+  };
+
+  const handleItemClick = (item: DocumentListItem) => {
+    console.log('Item clicked:', item);
+    // TODO: Navigate to folder or open document details
+  };
+
+  const handleRename = (item: DocumentListItem) => {
+    console.log('Rename:', item);
+    // TODO: Implement rename dialog
+  };
+
+  const handleMove = (item: DocumentListItem) => {
+    console.log('Move:', item);
+    // TODO: Implement move dialog
+  };
+
+  const handleDelete = async (item: DocumentListItem) => {
+    if (!confirm(`Are you sure you want to delete "${item.name}"?`)) return;
+
+    try {
+      // if (item.type === 'folder') {
+      //   await deleteFolder.mutateAsync(item.id);
+      // } else {
+      //   await deleteDocument.mutateAsync(item.id);
+      // }
+    } catch (error) {
+      console.error('Failed to delete item:', error);
+    }
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <div className="min-h-screen bg-zinc-50 p-8">
+      <div className="max-w-7xl mx-auto">
+        - DocumentsToolbar
+        - DocumentsSearch
+        <DocumentsTable
+          items={paginatedItems}
+          selected={selected}
+          onSelectAll={handleSelectAll}
+          onSelectOne={handleSelectOne}
+          onSort={handleSort}
+          sortField={sortField}
+          sortOrder={sortOrder}
+          onItemClick={handleItemClick}
+          onRename={handleRename}
+          onMove={handleMove}
+          onDelete={handleDelete}
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+        - PaginationControls
+        - CreateFolderDialog
+        - UploadFilesDialog
+      </div>
     </div>
   );
 }
+
