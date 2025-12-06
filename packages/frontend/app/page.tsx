@@ -1,11 +1,13 @@
 'use client'
 
-import DocumentsTable from "@/components/features/documents-table/DocumentsTable";
+import Table from "@/components/features/table/Table";
 import {DocumentListItem, SortField, SortOrder} from "@/types";
-import {useMemo, useState} from "react";
+import {useCallback, useMemo, useState} from "react";
 import {useDocuments, useFolders} from "@/hooks";
-import DocumentsToolbar from "@/components/features/documents-toolbar/DocumentsToolbar";
+import Toolbar from "@/components/features/toolbar/Toolbar";
 import Pagination from "@/components/features/pagination/Pagination";
+import Search from "@/components/features/search/Search";
+import {debounce} from "@/lib";
 
 export default function DocumentsPage() {
 
@@ -164,16 +166,29 @@ export default function DocumentsPage() {
     }
   };
 
+
+  // Debounced search handler
+  const debouncedSearch = useCallback(
+    debounce((value: string) => {
+      setSearchQuery(value);
+      setPage(1); // Reset to first page on search
+    }, 300),
+    []
+  );
+
   return (
     <div className="min-h-screen bg-zinc-50 p-8">
       <div className="max-w-7xl mx-auto">
-        <DocumentsToolbar
+        <Toolbar
           onUploadFiles={() => setUploadFilesOpen(true)}
           onAddFolder={() => setCreateFolderOpen(true)}
         />
 
-        - DocumentsSearch
-        <DocumentsTable
+        <div className="mb-4">
+          <Search value={searchQuery} onChange={debouncedSearch} />
+        </div>
+
+        <Table
           items={paginatedItems}
           selected={selected}
           onSelectAll={handleSelectAll}
