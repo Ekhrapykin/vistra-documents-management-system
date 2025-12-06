@@ -3,9 +3,9 @@
 import { Button } from '@mui/material';
 import UploadIcon from '@mui/icons-material/Upload';
 import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
-import DocumentsToolbarProps from "./DocumentsToolbar.props";
+import ToolbarProps from "./Toolbar.props";
 
-export default function DocumentsToolbar({ onUploadFiles, onAddFolder }: DocumentsToolbarProps) {
+export default function Toolbar({ onUploadFiles, onAddFolder }: ToolbarProps) {
   return (
     <div className="flex items-center justify-between mb-6">
       <h1 className="text-2xl font-semibold text-gray-800">Documents</h1>
