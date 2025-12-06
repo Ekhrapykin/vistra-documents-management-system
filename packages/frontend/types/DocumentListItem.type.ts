@@ -1,7 +1,5 @@
-enum DocumentListItemEnum {
-  Folder = 'folder',
-  Document = 'document',
-}
+import {DocumentListItemEnum} from "./DocumentListItem.enum";
+
 export type DocumentListItem = {
   id: number;
   name: string;

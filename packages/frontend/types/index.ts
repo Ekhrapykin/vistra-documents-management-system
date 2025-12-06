@@ -1,6 +1,7 @@
 export * from './Folder.type';
 export * from './Document.type';
 export * from './DocumentListItem.type';
+export * from './DocumentListItem.enum';
 export * from './SortField.enum';
 export * from './SortOrder.enum';
 export * from './CreateFolderDto.type';
