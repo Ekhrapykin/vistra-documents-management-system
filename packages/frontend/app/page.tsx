@@ -8,6 +8,7 @@ import Toolbar from "@/components/features/toolbar/Toolbar";
 import Pagination from "@/components/features/pagination/Pagination";
 import Search from "@/components/features/search/Search";
 import {debounce} from "@/lib";
+import CreateFolder from "@/components/features/dialog/CreateFolder";
 
 export default function DocumentsPage() {
 
@@ -210,7 +211,11 @@ export default function DocumentsPage() {
           onRowsPerPageChange={setRowsPerPage}
         />
 
-        - CreateFolderDialog
+        <CreateFolder
+          open={createFolderOpen}
+          onClose={() => setCreateFolderOpen(false)}
+        />
+
         - UploadFilesDialog
       </div>
     </div>
