@@ -19,11 +19,10 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import FolderIcon from '@mui/icons-material/Folder';
 import DescriptionIcon from '@mui/icons-material/Description';
 import {DocumentListItem, SortField, SortOrder} from '@/types';
-import {DocumentsTableProps} from "./DocumentsTable.props";
-import {indigo} from "@mui/material/colors";
+import {TableProps} from "./Table.props";
 import { formatFileSize, formatDate } from "@/lib";
 
-export default function DocumentsTable({
+export default function TableControl({
   items,
   selected,
   onSelectAll,
@@ -35,7 +34,7 @@ export default function DocumentsTable({
   onRename,
   onMove,
   onDelete,
-}: DocumentsTableProps) {
+}: TableProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [menuItem, setMenuItem] = useState<DocumentListItem | null>(null);
 

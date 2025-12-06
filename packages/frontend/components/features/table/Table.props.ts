@@ -1,6 +1,6 @@
 import {DocumentListItem, SortField, SortOrder} from "@/types";
 
-export interface DocumentsTableProps  {
+export interface TableProps {
   items: DocumentListItem[];
   selected: number[];
   onSelectAll: (checked: boolean) => void;
