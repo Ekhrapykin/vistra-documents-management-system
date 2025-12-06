@@ -3,7 +3,7 @@
 import { Button } from '@mui/material';
 import UploadIcon from '@mui/icons-material/Upload';
 import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
-import DocumentsToolbarProps from "@/components/features/documents-toolbar/DocumentsToolbar.props";
+import DocumentsToolbarProps from "./DocumentsToolbar.props";
 
 export default function DocumentsToolbar({ onUploadFiles, onAddFolder }: DocumentsToolbarProps) {
   return (

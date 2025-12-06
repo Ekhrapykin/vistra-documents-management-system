@@ -19,7 +19,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import FolderIcon from '@mui/icons-material/Folder';
 import DescriptionIcon from '@mui/icons-material/Description';
 import {DocumentListItem, SortField, SortOrder} from '@/types';
-import {DocumentsTableProps} from "./DocumentsTableProps.type";
+import {DocumentsTableProps} from "./DocumentsTable.props";
 import {indigo} from "@mui/material/colors";
 import { formatFileSize, formatDate } from "@/lib";
 
