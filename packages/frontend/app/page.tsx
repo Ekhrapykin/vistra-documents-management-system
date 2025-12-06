@@ -5,6 +5,7 @@ import {DocumentListItem, SortField, SortOrder} from "@/types";
 import {useMemo, useState} from "react";
 import {useDocuments, useFolders} from "@/hooks";
 import DocumentsToolbar from "@/components/features/documents-toolbar/DocumentsToolbar";
+import Pagination from "@/components/features/pagination/Pagination";
 
 export default function DocumentsPage() {
 
@@ -185,7 +186,15 @@ export default function DocumentsPage() {
           onMove={handleMove}
           onDelete={handleDelete}
         />
-        - PaginationControls
+
+        <Pagination
+          page={page}
+          rowsPerPage={rowsPerPage}
+          totalItems={sortedItems.length}
+          onPageChange={setPage}
+          onRowsPerPageChange={setRowsPerPage}
+        />
+
         - CreateFolderDialog
         - UploadFilesDialog
       </div>
