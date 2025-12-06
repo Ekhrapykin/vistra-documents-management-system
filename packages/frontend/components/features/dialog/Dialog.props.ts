@@ -1,5 +1,6 @@
-export default interface CreateFolderDialogProps {
+export default interface DialogProps {
   open: boolean;
   onClose: () => void;
   parentId?: number | null;
+  folderId?: number | null;
 }

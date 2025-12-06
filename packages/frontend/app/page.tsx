@@ -9,6 +9,7 @@ import Pagination from "@/components/features/pagination/Pagination";
 import Search from "@/components/features/search/Search";
 import {debounce} from "@/lib";
 import CreateFolder from "@/components/features/dialog/CreateFolder";
+import UploadFiles from "@/components/features/dialog/UploadFiles";
 
 export default function DocumentsPage() {
 
@@ -216,7 +217,10 @@ export default function DocumentsPage() {
           onClose={() => setCreateFolderOpen(false)}
         />
 
-        - UploadFilesDialog
+        <UploadFiles
+          open={uploadFilesOpen}
+          onClose={() => setUploadFilesOpen(false)}
+        />
       </div>
     </div>
   );

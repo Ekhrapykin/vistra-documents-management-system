@@ -10,9 +10,9 @@ import {
   Button,
 } from '@mui/material';
 import { useCreateFolder } from '@/hooks';
-import CreateFolderDialogProps from "./CreateFolder.props";
+import DialogProps from "./Dialog.props";
 
-export default function CreateFolder({ open, onClose, parentId }: CreateFolderDialogProps) {
+export default function CreateFolder({ open, onClose, parentId }: DialogProps) {
   const [folderName, setFolderName] = useState('');
   const createFolder = useCreateFolder();
 
