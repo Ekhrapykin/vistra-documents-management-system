@@ -15,7 +15,7 @@ const config: { [key: string]: Knex.Config } = {
     pool: { min: 1, max: 5 },
     migrations: {
       tableName: 'knex_migrations',
-      directory: '../knex_migrations',
+      directory: '../../knex_migrations',
     },
   },
 
@@ -30,7 +30,7 @@ const config: { [key: string]: Knex.Config } = {
     pool: { min: 1, max: 5 },
     migrations: {
       tableName: 'knex_migrations',
-      directory: '../knex_migrations',
+      directory: '../../knex_migrations',
     },
   },
 
@@ -45,7 +45,7 @@ const config: { [key: string]: Knex.Config } = {
     pool: { min: 1, max: 5 },
     migrations: {
       tableName: 'knex_migrations',
-      directory: '../knex_migrations',
+      directory: '../../knex_migrations',
     },
   }
 };

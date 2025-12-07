@@ -13,12 +13,10 @@ export async function up(knex: Knex): Promise<void> {
         .nullable()
         .references('id')
         .inTable('folders')
-        .onDelete('SET NULL');
+        .onDelete('CASCADE');
 
       table.string('name', 255).notNullable();
       table.string('created_by', 255).notNullable();
-
-      table.boolean('is_deleted').defaultTo(false);
 
       table.dateTime('created_at').defaultTo(knex.fn.now());
       table.dateTime('updated_at').defaultTo(knex.fn.now());
