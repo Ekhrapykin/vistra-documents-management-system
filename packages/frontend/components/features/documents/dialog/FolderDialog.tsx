@@ -12,7 +12,7 @@ import {
 import { useCreateFolder } from '@/hooks';
 import DialogProps from "./Dialog.props";
 
-export default function CreateFolder({ open, onClose, parentId }: DialogProps) {
+export default function FolderDialog({ open, onClose, parentId }: DialogProps) {
   const [folderName, setFolderName] = useState('');
   const createFolder = useCreateFolder();
 

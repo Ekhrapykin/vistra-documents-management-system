@@ -12,9 +12,9 @@ import {
 import { useCreateDocument } from '@/hooks';
 import DialogProps from "./Dialog.props";
 
-export default function UploadFiles({ open, onClose, folderId }: DialogProps) {
-  const [fileName, setFileName] = useState('');
-  const [fileSize, setFileSize] = useState('');
+export default function FileDialog({ open, onClose, folderId, initialData }: DialogProps) {
+  const [fileName, setFileName] = useState(initialData?.fileName || '');
+  const [fileSize, setFileSize] = useState(initialData?.fileSize || '');
   const createDocument = useCreateDocument();
 
   const handleSubmit = async () => {
@@ -25,10 +25,8 @@ export default function UploadFiles({ open, onClose, folderId }: DialogProps) {
         name: fileName,
         folder_id: folderId || null,
         created_by: 'Current User', // TODO: Get from auth context
-        file_size_bytes: parseInt(fileSize) * 1024, // Convert KB to bytes
+        file_size_bytes: Number(fileSize) * 1024, // Convert KB to bytes
       });
-      setFileName('');
-      setFileSize('');
       onClose();
     } catch (error) {
       console.error('Failed to upload document:', error);
@@ -36,8 +34,6 @@ export default function UploadFiles({ open, onClose, folderId }: DialogProps) {
   };
 
   const handleClose = () => {
-    setFileName('');
-    setFileSize('');
     onClose();
   };
 
@@ -60,8 +56,8 @@ export default function UploadFiles({ open, onClose, folderId }: DialogProps) {
             type="number"
             fullWidth
             variant="outlined"
+            aria-readonly={true}
             value={fileSize}
-            onChange={(e) => setFileSize(e.target.value)}
             helperText="Enter file size in kilobytes"
           />
         </div>

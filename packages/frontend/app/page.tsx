@@ -4,10 +4,11 @@ import {CircularProgress} from '@mui/material';
 import Table from "@/components/features/documents/table/Table";
 import Toolbar from "@/components/features/documents/toolbar/Toolbar";
 import {useDocumentController} from "@/components/features/documents/controller";
-import CreateFolder from "@/components/features/documents/dialog/CreateFolder";
-import UploadFiles from "@/components/features/documents/dialog/UploadFiles";
+import FolderDialog from "@/components/features/documents/dialog/FolderDialog";
+import FileDialog from "@/components/features/documents/dialog/FileDialog";
 import Search from "@/components/features/documents/search/Search";
 import Pagination from "@/components/features/documents/pagination/Pagination";
+import UploadDialog from "@/components/features/documents/dialog/UploadDialog";
 
 export default function DocumentsPage() {
 
@@ -28,8 +29,10 @@ export default function DocumentsPage() {
     handleSort,
     createFolderOpen,
     setCreateFolderOpen,
-    uploadFilesOpen,
-    setUploadFilesOpen,
+    fileDialogOpen,
+    setFileDialogOpen,
+    uploadDialogOpen,
+    setUploadDialogOpen,
     handleItemClick,
     handleRename,
     handleMove,
@@ -44,7 +47,7 @@ export default function DocumentsPage() {
     <div className="min-h-screen bg-zinc-50 p-8">
       <div className="max-w-7xl mx-auto">
         <Toolbar
-          onUploadFiles={() => setUploadFilesOpen(true)}
+          onUploadFiles={() => setUploadDialogOpen(true)}
           onAddFolder={() => setCreateFolderOpen(true)}
         />
 
@@ -74,14 +77,19 @@ export default function DocumentsPage() {
           onRowsPerPageChange={setRowsPerPage}
         />
 
-        <CreateFolder
+        <FolderDialog
           open={createFolderOpen}
           onClose={() => setCreateFolderOpen(false)}
         />
 
-        <UploadFiles
-          open={uploadFilesOpen}
-          onClose={() => setUploadFilesOpen(false)}
+        <FileDialog
+          open={fileDialogOpen}
+          onClose={() => setFileDialogOpen(false)}
+        />
+
+        <UploadDialog
+          open={uploadDialogOpen}
+          onClose={() => setUploadDialogOpen(false)}
         />
       </div>
     </div>);

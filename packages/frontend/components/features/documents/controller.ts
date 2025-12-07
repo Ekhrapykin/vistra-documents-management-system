@@ -11,7 +11,9 @@ export function useDocumentController() {
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [createFolderOpen, setCreateFolderOpen] = useState(false);
-  const [uploadFilesOpen, setUploadFilesOpen] = useState(false);
+  const [fileDialogOpen, setFileDialogOpen] = useState(false);
+  const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
+  const [initialFileData, setInitialFileData] = useState(null);
 
   const {data: items =[], isLoading: itemsLoading} = useDMS();
   const deleteFolder = useDeleteFolder();
@@ -55,6 +57,7 @@ export function useDocumentController() {
   const handleRename = (item: DocumentListItem) => {
     console.log('Rename:', item);
     // TODO: Implement rename dialog
+    setCreateFolderOpen(true);
   };
 
   const handleMove = (item: DocumentListItem) => {
@@ -96,7 +99,10 @@ export function useDocumentController() {
     setRowsPerPage,
     createFolderOpen,
     setCreateFolderOpen,
-    uploadFilesOpen,
-    setUploadFilesOpen,
+    fileDialogOpen,
+    setFileDialogOpen,
+    initialFileData,
+    uploadDialogOpen,
+    setUploadDialogOpen,
   };
 }
