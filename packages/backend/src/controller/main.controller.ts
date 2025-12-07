@@ -41,8 +41,8 @@ export const mainController = {
       documentsCountQuery.whereILike('name', `%${search}%`);
     }
     const [foldersCountResult, documentsCountResult] = await Promise.all([
-      foldersCountQuery.count({ count: '1' }),
-      documentsCountQuery.count({ count: '1' })
+      foldersCountQuery.count({ count: 'id' }),
+      documentsCountQuery.count({ count: 'id' })
     ]);
     const total = Number(foldersCountResult[0].count) + Number(documentsCountResult[0].count);
 
