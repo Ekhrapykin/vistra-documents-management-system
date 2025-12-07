@@ -1,6 +1,6 @@
 import {useCallback, useMemo, useState} from "react";
 import {DocumentListItem, DocumentListItemEnum, SortField, SortOrder} from "@/types";
-import {useDeleteDocument, useDeleteFolder, useDocuments, useFolders} from "@/hooks";
+import {useDeleteDocument, useDeleteFolder, useDMS} from "@/hooks";
 import {debounce} from "@/lib";
 
 export function useDocumentController() {
@@ -13,88 +13,9 @@ export function useDocumentController() {
   const [createFolderOpen, setCreateFolderOpen] = useState(false);
   const [uploadFilesOpen, setUploadFilesOpen] = useState(false);
 
-  const {data: folders, isLoading: foldersLoading} = useFolders();
-  const {data: documents, isLoading: documentsLoading} = useDocuments();
+  const {data: items =[], isLoading: itemsLoading} = useDMS();
   const deleteFolder = useDeleteFolder();
   const deleteDocument = useDeleteDocument();
-
-  // Combine folders and documents into a single list
-  const allItems: DocumentListItem[] = useMemo(() => {
-    const items: DocumentListItem[] = [];
-
-    if (folders) {
-      items.push(
-        ...folders
-          .filter((f) => !f.is_deleted)
-          .map((folder) => ({
-            id: folder.id,
-            name: folder.name,
-            type: DocumentListItemEnum.Folder,
-            created_by: folder.created_by,
-            created_at: folder.created_at,
-            parent_id: folder.parent_id,
-          }))
-      );
-    }
-
-    if (documents) {
-      items.push(
-        ...documents
-          .filter((d) => !d.is_deleted)
-          .map((doc) => ({
-            id: doc.id,
-            name: doc.name,
-            type: DocumentListItemEnum.Document,
-            created_by: doc.created_by,
-            created_at: doc.created_at,
-            file_size_bytes: doc.file_size_bytes,
-            folder_id: doc.folder_id,
-          }))
-      );
-    }
-
-    return items;
-  }, [folders, documents]);
-
-  // Filter items based on search query
-  const filteredItems = useMemo(() => {
-    if (!searchQuery.trim()) return allItems;
-
-    const query = searchQuery.toLowerCase();
-    return allItems.filter(
-      (item) =>
-        item.name.toLowerCase().includes(query) ||
-        item.created_by.toLowerCase().includes(query)
-    );
-  }, [allItems, searchQuery]);
-
-  // Sort items
-  const sortedItems = useMemo(() => {
-    const items = [...filteredItems];
-
-    items.sort((a, b) => {
-      let aValue: any = a[sortField];
-      let bValue: any = b[sortField];
-
-      // Handle undefined values for file_size_bytes in folders
-      if (sortField === 'file_size_bytes') {
-        aValue = aValue ?? 0;
-        bValue = bValue ?? 0;
-      }
-
-      if (aValue < bValue) return sortOrder === 'asc' ? -1 : 1;
-      if (aValue > bValue) return sortOrder === 'asc' ? 1 : -1;
-      return 0;
-    });
-
-    return items;
-  }, [filteredItems, sortField, sortOrder]);
-
-  // Paginate items
-  const paginatedItems = useMemo(() => {
-    const startIndex = (page - 1) * rowsPerPage;
-    return sortedItems.slice(startIndex, startIndex + rowsPerPage);
-  }, [sortedItems, page, rowsPerPage]);
 
   // Debounced search handler
   const debouncedSearch = useCallback(
@@ -115,11 +36,7 @@ export function useDocumentController() {
   };
 
   const handleSelectAll = (checked: boolean) => {
-    if (checked) {
-      setSelected(paginatedItems.map((item) => item.id));
-    } else {
-      setSelected([]);
-    }
+    setSelected(checked ? items.map((item: { id: any; }) => item.id) : []);
   };
 
   const handleSelectOne = (id: number, checked: boolean) => {
@@ -159,8 +76,8 @@ export function useDocumentController() {
     }
   };
   return {
-    paginatedItems,
-    sortedItems,
+    items,
+    itemsLoading,
     searchQuery,
     debouncedSearch,
     handleSort,
@@ -181,7 +98,5 @@ export function useDocumentController() {
     setCreateFolderOpen,
     uploadFilesOpen,
     setUploadFilesOpen,
-    foldersLoading,
-    documentsLoading,
   };
 }

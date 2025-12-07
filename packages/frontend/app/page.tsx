@@ -12,12 +12,12 @@ import Pagination from "@/components/features/documents/pagination/Pagination";
 export default function DocumentsPage() {
 
   const {
+    items,
+    itemsLoading,
     page,
     setPage,
     rowsPerPage,
     setRowsPerPage,
-    sortedItems,
-    paginatedItems,
     selected,
     searchQuery,
     debouncedSearch,
@@ -34,11 +34,9 @@ export default function DocumentsPage() {
     handleRename,
     handleMove,
     handleDelete,
-    foldersLoading,
-    documentsLoading
   } = useDocumentController()
 
-  return foldersLoading || documentsLoading ? (
+  return itemsLoading ? (
     <div className="flex items-center justify-center min-h-screen">
       <CircularProgress/>
     </div>
@@ -55,7 +53,7 @@ export default function DocumentsPage() {
         </div>
 
         <Table
-          items={paginatedItems}
+          items={items.items}
           selected={selected}
           onSelectAll={handleSelectAll}
           onSelectOne={handleSelectOne}
@@ -71,7 +69,7 @@ export default function DocumentsPage() {
         <Pagination
           page={page}
           rowsPerPage={rowsPerPage}
-          totalItems={sortedItems.length}
+          totalItems={items.length}
           onPageChange={setPage}
           onRowsPerPageChange={setRowsPerPage}
         />

@@ -3,28 +3,6 @@ import { documentsService } from '@/services';
 import { CreateDocumentDto, UpdateDocumentDto } from '@/types';
 
 // Documents Hooks
-export function useDocuments() {
-  return useQuery({
-    queryKey: ['documents'],
-    queryFn: documentsService.getAll,
-  });
-}
-
-export function useDocument(id: number) {
-  return useQuery({
-    queryKey: ['documents', id],
-    queryFn: () => documentsService.getById(id),
-    enabled: !!id,
-  });
-}
-
-export function useDocumentsByFolder(folderId: number) {
-  return useQuery({
-    queryKey: ['documents', 'folder', folderId],
-    queryFn: () => documentsService.getByFolderId(folderId),
-    enabled: !!folderId,
-  });
-}
 
 export function useCreateDocument() {
   const queryClient = useQueryClient();
