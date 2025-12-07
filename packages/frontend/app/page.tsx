@@ -31,6 +31,7 @@ export default function DocumentsPage() {
     setCreateFolderOpen,
     fileDialogOpen,
     setFileDialogOpen,
+    initialFileData,
     uploadDialogOpen,
     setUploadDialogOpen,
     handleItemClick,
@@ -85,6 +86,7 @@ export default function DocumentsPage() {
         <FileDialog
           open={fileDialogOpen}
           onClose={() => setFileDialogOpen(false)}
+          initialData={initialFileData}
         />
 
         <UploadDialog

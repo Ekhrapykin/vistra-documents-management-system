@@ -1,7 +1,13 @@
-import {useCallback, useMemo, useState} from "react";
-import {DocumentListItem, DocumentListItemEnum, SortField, SortOrder} from "@/types";
+import {useCallback, useState} from "react";
+import {DocumentListItem, SortField, SortOrder} from "@/types";
 import {useDeleteDocument, useDeleteFolder, useDMS} from "@/hooks";
 import {debounce} from "@/lib";
+
+export type InitialFileData = {
+  id?: number;
+  fileName: string;
+  fileSize: string;
+};
 
 export function useDocumentController() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -13,7 +19,7 @@ export function useDocumentController() {
   const [createFolderOpen, setCreateFolderOpen] = useState(false);
   const [fileDialogOpen, setFileDialogOpen] = useState(false);
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
-  const [initialFileData, setInitialFileData] = useState(null);
+  const [initialFileData, setInitialFileData] = useState<InitialFileData | null>(null);
 
   const {data: items =[], isLoading: itemsLoading} = useDMS();
   const deleteFolder = useDeleteFolder();
@@ -55,9 +61,12 @@ export function useDocumentController() {
   };
 
   const handleRename = (item: DocumentListItem) => {
-    console.log('Rename:', item);
-    // TODO: Implement rename dialog
-    setCreateFolderOpen(true);
+    setInitialFileData({
+      id: item.id,
+      fileName: item.name,
+      fileSize: String(item.file_size_bytes / 1024),
+    });
+    setFileDialogOpen(true);
   };
 
   const handleMove = (item: DocumentListItem) => {

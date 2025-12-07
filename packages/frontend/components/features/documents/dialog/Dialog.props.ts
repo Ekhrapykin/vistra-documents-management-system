@@ -4,6 +4,7 @@ export default interface DialogProps {
   parentId?: number | null;
   folderId?: number | null;
   initialData?: {
+    id?: number;
     fileName?: string;
     fileSize?: string;
   };

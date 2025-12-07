@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -9,37 +9,50 @@ import {
   TextField,
   Button,
 } from '@mui/material';
-import { useCreateDocument } from '@/hooks';
+import { useCreateDocument, useUpdateDocument } from '@/hooks';
 import DialogProps from "./Dialog.props";
 
 export default function FileDialog({ open, onClose, folderId, initialData }: DialogProps) {
   const [fileName, setFileName] = useState(initialData?.fileName || '');
   const [fileSize, setFileSize] = useState(initialData?.fileSize || '');
   const createDocument = useCreateDocument();
+  const updateDocument = useUpdateDocument();
+
+  // Update state when initialData changes
+  useEffect(() => {
+    if (open) {
+      setFileName(initialData?.fileName || '');
+      setFileSize(initialData?.fileSize || '');
+    }
+  }, [open, initialData]);
 
   const handleSubmit = async () => {
-    if (!fileName.trim() || !fileSize.trim()) return;
+    if (!fileName.trim()) return;
 
     try {
-      await createDocument.mutateAsync({
-        name: fileName,
-        folder_id: folderId || null,
-        created_by: 'Current User', // TODO: Get from auth context
-        file_size_bytes: Number(fileSize) * 1024, // Convert KB to bytes
-      });
-      onClose();
+        await updateDocument.mutateAsync({
+          id: initialData?.id!,
+          data: {
+            name: fileName,
+          },
+        });
+      handleClose();
     } catch (error) {
-      console.error('Failed to upload document:', error);
+      console.error(`Failed to update document:`, error);
     }
   };
 
   const handleClose = () => {
+    setFileName('');
+    setFileSize('');
     onClose();
   };
 
+  const isPending = createDocument.isPending || updateDocument.isPending;
+
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
-      <DialogTitle>Upload Document</DialogTitle>
+      <DialogTitle>Rename Document</DialogTitle>
       <DialogContent>
         <div className="flex flex-col gap-4 mt-2">
           <TextField
@@ -56,8 +69,8 @@ export default function FileDialog({ open, onClose, folderId, initialData }: Dia
             type="number"
             fullWidth
             variant="outlined"
-            aria-readonly={true}
             value={fileSize}
+            disabled
             helperText="Enter file size in kilobytes"
           />
         </div>
@@ -67,9 +80,9 @@ export default function FileDialog({ open, onClose, folderId, initialData }: Dia
         <Button
           onClick={handleSubmit}
           variant="contained"
-          disabled={!fileName.trim() || !fileSize.trim() || createDocument.isPending}
+          disabled={!fileName.trim() || !fileSize.trim() || isPending}
         >
-          {createDocument.isPending ? 'Uploading...' : 'Upload'}
+          {isPending ? 'Updating...' : 'Update'}
         </Button>
       </DialogActions>
     </Dialog>
