@@ -5,13 +5,18 @@ import {CreateDocumentDto, CreateFolderDto, UpdateDocumentDto, UpdateFolderDto} 
 const router = Router();
 
 router
-  .get('/', async (_req: Request, res: Response) => {
+  .get('/', async (req: Request, res: Response) => {
     try {
-      const content = mainController.queryAll()
-      return res.json(content);
+      const { search = '', page = 1, pageSize = 25 } = req.query;
+      const result = await mainController.queryAll({
+        search: search.toString(),
+        page: Number(page),
+        pageSize: Number(pageSize),
+      });
+      return res.json(result);
     } catch (error) {
       console.error('Error fetching folders:', error);
-      return res.status(500).json({error: 'Failed to fetch folders'});
+      return res.status(500).json({ error: 'Failed to fetch folders' });
     }
   })
   .post('/folder', async (req: Request, res: Response) => {
