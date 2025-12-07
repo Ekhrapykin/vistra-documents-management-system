@@ -1,5 +1,9 @@
-import {useQuery} from '@tanstack/react-query';
+import {QueryClient, useQuery} from '@tanstack/react-query';
 import {dmsService} from '@/services';
+
+export const invalidate = (queryClient: QueryClient) => () => {
+  queryClient.invalidateQueries({queryKey: ['items']});
+}
 
 export function useDMS() {
   return useQuery({

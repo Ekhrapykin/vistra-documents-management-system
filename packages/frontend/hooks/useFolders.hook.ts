@@ -1,6 +1,7 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { foldersService } from '@/services';
-import { CreateFolderDto, UpdateFolderDto } from '@/types';
+import {QueryClient, useMutation, useQueryClient} from '@tanstack/react-query';
+import {foldersService} from '@/services';
+import {CreateFolderDto, UpdateFolderDto} from '@/types';
+import {invalidate} from "./useDMS.hook";
 
 // Folders Hooks
 export function useCreateFolder() {
@@ -8,10 +9,7 @@ export function useCreateFolder() {
 
   return useMutation({
     mutationFn: (folder: CreateFolderDto) => foldersService.create(folder),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['folders'] });
-      queryClient.invalidateQueries({ queryKey: ['documents'] });
-    },
+    onSuccess: invalidate(queryClient)
   });
 }
 
@@ -19,11 +17,9 @@ export function useUpdateFolder() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, data }: { id: number; data: UpdateFolderDto }) =>
+    mutationFn: ({id, data}: { id: number; data: UpdateFolderDto }) =>
       foldersService.update(id, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['folders'] });
-    },
+    onSuccess: invalidate(queryClient)
   });
 }
 
@@ -32,9 +28,6 @@ export function useDeleteFolder() {
 
   return useMutation({
     mutationFn: (id: number) => foldersService.delete(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['folders'] });
-      queryClient.invalidateQueries({ queryKey: ['documents'] });
-    },
+    onSuccess: invalidate(queryClient)
   });
 }
