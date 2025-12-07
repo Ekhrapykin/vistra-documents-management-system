@@ -19,7 +19,7 @@ router
       return res.status(500).json({ error: 'Failed to fetch folders' });
     }
   })
-  .post('/folder', async (req: Request, res: Response) => {
+  .post('/folders', async (req: Request, res: Response) => {
     try {
       const {name, parent_id, created_by}: CreateFolderDto = req.body;
 
@@ -37,7 +37,7 @@ router
       return res.status(500).json({error: 'Failed to create folder'});
     }
   })
-  .put('/folder/:id', async (req: Request, res: Response) => {
+  .put('/folders/:id', async (req: Request, res: Response) => {
     try {
       const {id} = req.params;
       const {name, parent_id}: UpdateFolderDto = req.body;
@@ -57,7 +57,7 @@ router
       return res.status(500).json({error: 'Failed to update folder'});
     }
   })
-  .delete('/folder/:id', async (req: Request, res: Response) => {
+  .delete('/folders/:id', async (req: Request, res: Response) => {
     try {
       const {id} = req.params;
       const deleted = await folderController.delete(Number(id));
