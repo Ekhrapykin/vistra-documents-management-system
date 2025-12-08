@@ -27,6 +27,7 @@ router
       return res.status(500).json({ error: 'Failed to fetch items' });
     }
   })
+
   .post('/folders', async (req: Request, res: Response) => {
     try {
       const {name, parent_id, created_by}: CreateFolderDto = req.body;
@@ -45,6 +46,7 @@ router
       return res.status(500).json({error: 'Failed to create folder'});
     }
   })
+
   .put('/folders/:id', async (req: Request, res: Response) => {
     try {
       const {id} = req.params;
@@ -65,6 +67,7 @@ router
       return res.status(500).json({error: 'Failed to update folder'});
     }
   })
+
   .delete('/folders/:id', async (req: Request, res: Response) => {
     try {
       const {id} = req.params;
@@ -79,6 +82,7 @@ router
       return res.status(500).json({error: 'Failed to delete folder'});
     }
   })
+
   .post('/documents', async (req: Request, res: Response) => {
     try {
       const {name, folder_id, created_by, file_size_bytes}: CreateDocumentDto = req.body;
@@ -97,6 +101,7 @@ router
       return res.status(500).json({error: 'Failed to create document'});
     }
   })
+
   .put('/documents/:id', async (req: Request, res: Response) => {
     try {
       const {id} = req.params;
@@ -117,6 +122,7 @@ router
       return res.status(500).json({error: 'Failed to update document'});
     }
   })
+
   .delete('/documents/:id', async (req: Request, res: Response) => {
     try {
       const {id} = req.params;
