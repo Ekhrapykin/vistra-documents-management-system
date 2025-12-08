@@ -55,77 +55,74 @@ export default function DocumentsPage() {
   } = useDocumentController();
 
   return (
-    <div className="min-h-screen bg-zinc-50 p-8">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-zinc-50 p-8 max-w-7xl mx-auto">
+      <div className="mb-4 flex justify-between items-center">
+        <Search value={searchQuery} onChange={debouncedSearch}/>
         <Toolbar
           onUploadFiles={() => setUploadDialogOpen(true)}
           onAddFolder={() => setFolderDialogOpen(true)}
         />
-
-        <div className="mb-4">
-          <Search value={searchQuery} onChange={debouncedSearch}/>
-        </div>
-
-          <Table
-            items={items}
-            selected={selected}
-            onSelectAll={handleSelectAll}
-            onSelectOne={handleSelectOne}
-            onSort={handleSort}
-            sortField={sortField}
-            sortOrder={sortOrder}
-            onItemClick={handleItemClick}
-            onRename={handleRename}
-            onMove={handleMove}
-            onDelete={handleDelete}
-            loading={itemsLoading}
-          />
-
-        <Pagination
-          page={page}
-          rowsPerPage={rowsPerPage}
-          totalItems={total}
-          onPageChange={setPage}
-          onRowsPerPageChange={setRowsPerPage}
-        />
-
-        <FolderDialog
-          open={folderDialogOpen}
-          onClose={() => setFolderDialogOpen(false)}
-          initialData={initialFolderData}
-        />
-
-        <FileDialog
-          open={fileDialogOpen}
-          onClose={() => setFileDialogOpen(false)}
-          initialData={initialFileData}
-        />
-
-        <UploadDialog
-          open={uploadDialogOpen}
-          onClose={() => setUploadDialogOpen(false)}
-        />
-
-        <DeleteConfirmDialog
-          open={deleteDialogOpen}
-          onClose={() => setDeleteDialogOpen(false)}
-          onConfirm={confirmDelete}
-          item={itemToDelete}
-        />
-
-        <PreviewDialog
-          open={previewDialogOpen}
-          item={previewItem}
-          onCloseAction={() => setPreviewDialogOpen(false)}
-        />
-
-        <NoticeDialog
-          open={noticeDialogOpen}
-          title={noticeTitle}
-          message={noticeMessage}
-          onCloseAction={() => setNoticeDialogOpen(false)}
-        />
       </div>
+
+      <Table
+        items={items}
+        selected={selected}
+        onSelectAll={handleSelectAll}
+        onSelectOne={handleSelectOne}
+        onSort={handleSort}
+        sortField={sortField}
+        sortOrder={sortOrder}
+        onItemClick={handleItemClick}
+        onRename={handleRename}
+        onMove={handleMove}
+        onDelete={handleDelete}
+        loading={itemsLoading}
+      />
+
+      <Pagination
+        page={page}
+        rowsPerPage={rowsPerPage}
+        totalItems={total}
+        onPageChange={setPage}
+        onRowsPerPageChange={setRowsPerPage}
+      />
+
+      <FolderDialog
+        open={folderDialogOpen}
+        onClose={() => setFolderDialogOpen(false)}
+        initialData={initialFolderData}
+      />
+
+      <FileDialog
+        open={fileDialogOpen}
+        onClose={() => setFileDialogOpen(false)}
+        initialData={initialFileData}
+      />
+
+      <UploadDialog
+        open={uploadDialogOpen}
+        onClose={() => setUploadDialogOpen(false)}
+      />
+
+      <DeleteConfirmDialog
+        open={deleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}
+        onConfirm={confirmDelete}
+        item={itemToDelete}
+      />
+
+      <PreviewDialog
+        open={previewDialogOpen}
+        item={previewItem}
+        onCloseAction={() => setPreviewDialogOpen(false)}
+      />
+
+      <NoticeDialog
+        open={noticeDialogOpen}
+        title={noticeTitle}
+        message={noticeMessage}
+        onCloseAction={() => setNoticeDialogOpen(false)}
+      />
     </div>
   );
 }

@@ -79,11 +79,11 @@ export default function UploadDialog({open, onClose, folderId}: DialogProps) {
       <DialogTitle>Upload Document</DialogTitle>
       <DialogContent>
         <div className="flex flex-col gap-4 mt-2">
-          <Box display="flex" alignItems="center" gap={2} sx={{border: '1px solid #ccc', borderRadius: 1, p: 1}}>
+          <Box display="flex" alignItems="center" gap={2} sx={{ border: '1px solid #ccc', borderRadius: 1, p: 1 }}>
             <Button variant="outlined" onClick={handleChooseFile}>
               Choose File
             </Button>
-            <Typography variant="body2" sx={{flexGrow: 1}}>
+            <Typography variant="body2" sx={{ flexGrow: 1 }}>
               {displayFileName}
             </Typography>
           </Box>
@@ -91,7 +91,7 @@ export default function UploadDialog({open, onClose, folderId}: DialogProps) {
             ref={inputRef}
             type="file"
             onChange={handleFileChange}
-            style={{display: 'none'}}
+            style={{ display: 'none' }}
           />
           <TextField
             autoFocus={!selectedFile}
