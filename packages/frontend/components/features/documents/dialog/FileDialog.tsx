@@ -1,25 +1,26 @@
 'use client';
 
-import { useState } from 'react';
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
-  Button,
-} from '@mui/material';
-import { useCreateDocument, useUpdateDocument } from '@/hooks';
+import {useState} from 'react';
+import {Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField,} from '@mui/material';
+import {useCreateDocument, useUpdateDocument} from '@/hooks';
 import DialogProps from "./Dialog.props";
-
-function FileDialogContent({ open, onClose, initialData }: DialogProps) {
+import {validateInput} from "@/lib";
+function FileDialogContent({open, onClose, initialData}: DialogProps) {
   const [fileName, setFileName] = useState(initialData?.fileName || '');
   const [fileSize] = useState(initialData?.fileSize || '');
+  const [error, setError] = useState('');
   const createDocument = useCreateDocument();
   const updateDocument = useUpdateDocument();
 
+  const handleInputChange = (value: string) => {
+    setFileName(value);
+    setError(value && !validateInput(value) ?
+      'Only English letters, numbers, dots, and underscores are allowed' :
+      '');
+  };
+
   const handleSubmit = async () => {
-    if (!fileName.trim() || !initialData?.id) return;
+    if (!fileName.trim() || !initialData?.id || error) return;
 
     try {
       await updateDocument.mutateAsync({
@@ -48,7 +49,9 @@ function FileDialogContent({ open, onClose, initialData }: DialogProps) {
             fullWidth
             variant="outlined"
             value={fileName}
-            onChange={(e) => setFileName(e.target.value)}
+            onChange={(e) => handleInputChange(e.target.value)}
+            error={!!error}
+            helperText={error || 'Only English letters, numbers, dots, and underscores allowed'}
           />
           <TextField
             label="File Size (KB)"
@@ -57,7 +60,7 @@ function FileDialogContent({ open, onClose, initialData }: DialogProps) {
             variant="outlined"
             value={fileSize}
             disabled
-            helperText="Enter file size in kilobytes"
+            helperText="File size cannot be changed"
           />
         </div>
       </DialogContent>
@@ -66,7 +69,7 @@ function FileDialogContent({ open, onClose, initialData }: DialogProps) {
         <Button
           onClick={handleSubmit}
           variant="contained"
-          disabled={!fileName.trim() || !fileSize.trim() || isPending}
+          disabled={!fileName.trim() || !fileSize.trim() || !!error || isPending}
         >
           {isPending ? 'Updating...' : 'Update'}
         </Button>
@@ -77,6 +80,5 @@ function FileDialogContent({ open, onClose, initialData }: DialogProps) {
 
 export default function FileDialog(props: DialogProps) {
   // Use key prop to reset component state when initialData changes
-  return <FileDialogContent {...props} key={props.initialData?.id || 'new'} />;
+  return <FileDialogContent {...props} key={props.initialData?.id || 'new'}/>;
 }
-

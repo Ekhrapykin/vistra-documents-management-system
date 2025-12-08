@@ -1,13 +1,7 @@
 import {useMemo, useState} from "react";
-import {DocumentListItem, SortField, SortOrder} from "@/types";
+import {DocumentListItem, SortField, SortOrder, InitialFileData, InitialFolderData} from "@/types";
 import {useDeleteDocument, useDeleteFolder, useDMS} from "@/hooks";
 import {debounce} from "@/lib";
-
-export type InitialFileData = {
-  id?: number;
-  fileName: string;
-  fileSize: string;
-};
 
 export function useDocumentController() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -16,10 +10,13 @@ export function useDocumentController() {
   const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.Asc);
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [createFolderOpen, setCreateFolderOpen] = useState(false);
+  const [folderDialogOpen, setFolderDialogOpen] = useState(false);
   const [fileDialogOpen, setFileDialogOpen] = useState(false);
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState<DocumentListItem | undefined>(undefined);
   const [initialFileData, setInitialFileData] = useState<InitialFileData | undefined>(undefined);
+  const [initialFolderData, setInitialFolderData] = useState<InitialFolderData | undefined>(undefined);
 
   const {data, isLoading: itemsLoading} = useDMS({
     search: searchQuery,
@@ -72,12 +69,20 @@ export function useDocumentController() {
   };
 
   const handleRename = (item: DocumentListItem) => {
-    setInitialFileData({
-      id: item.id,
-      fileName: item.name,
-      fileSize: String(item.file_size_bytes / 1024),
-    });
-    setFileDialogOpen(true);
+    if (item.type === 'folder') {
+      setInitialFolderData({
+        id: item.id,
+        folderName: item.name,
+      });
+      setFolderDialogOpen(true);
+    } else {
+      setInitialFileData({
+        id: item.id,
+        fileName: item.name,
+        fileSize: item.file_size_bytes ? String(item.file_size_bytes / 1024) : '0',
+      });
+      setFileDialogOpen(true);
+    }
   };
 
   const handleMove = (item: DocumentListItem) => {
@@ -85,15 +90,22 @@ export function useDocumentController() {
     // TODO: Implement move dialog
   };
 
-  const handleDelete = async (item: DocumentListItem) => {
-    if (!confirm(`Are you sure you want to delete "${item.name}"?`)) return;
+  const handleDelete = (item: DocumentListItem) => {
+    setItemToDelete(item);
+    setDeleteDialogOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!itemToDelete) return;
 
     try {
-      if (item.type === 'folder') {
-        await deleteFolder.mutateAsync(item.id);
+      if (itemToDelete.type === 'folder') {
+        await deleteFolder.mutateAsync(itemToDelete.id);
       } else {
-        await deleteDocument.mutateAsync(item.id);
+        await deleteDocument.mutateAsync(itemToDelete.id);
       }
+      setDeleteDialogOpen(false);
+      setItemToDelete(undefined);
     } catch (error) {
       console.error('Failed to delete item:', error);
     }
@@ -111,6 +123,7 @@ export function useDocumentController() {
     handleRename,
     handleMove,
     handleDelete,
+    confirmDelete,
     selected,
     sortField,
     sortOrder,
@@ -118,12 +131,16 @@ export function useDocumentController() {
     setPage,
     rowsPerPage,
     setRowsPerPage,
-    createFolderOpen,
-    setCreateFolderOpen,
+    folderDialogOpen,
+    setFolderDialogOpen,
+    initialFolderData,
     fileDialogOpen,
     setFileDialogOpen,
     initialFileData,
     uploadDialogOpen,
     setUploadDialogOpen,
+    deleteDialogOpen,
+    setDeleteDialogOpen,
+    itemToDelete,
   };
 }

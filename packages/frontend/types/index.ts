@@ -8,4 +8,4 @@ export * from './CreateFolderDto.type';
 export * from './CreateDocumentDto.type';
 export * from './UpdateFolderDto.type';
 export * from './UpdateDocumentDto.type';
-
+export * from './Dialog.type';

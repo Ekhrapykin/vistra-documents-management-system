@@ -7,5 +7,6 @@ export default interface DialogProps {
     id?: number;
     fileName?: string;
     fileSize?: string;
+    folderName?: string;
   };
 }

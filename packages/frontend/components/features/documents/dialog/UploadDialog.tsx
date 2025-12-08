@@ -12,13 +12,28 @@ import {
 import { useCreateDocument } from '@/hooks';
 import DialogProps from "./Dialog.props";
 
+// Validation: Only English letters, numbers, dots, and underscores
+const validateInput = (value: string): boolean => {
+  return /^[a-zA-Z0-9._]+$/.test(value);
+};
+
 export default function UploadDialog({ open, onClose, folderId }: DialogProps) {
   const [fileName, setFileName] = useState('');
   const [fileSize, setFileSize] = useState('');
+  const [error, setError] = useState('');
   const createDocument = useCreateDocument();
 
+  const handleInputChange = (value: string) => {
+    setFileName(value);
+    if (value && !validateInput(value)) {
+      setError('Only English letters, numbers, dots, and underscores are allowed');
+    } else {
+      setError('');
+    }
+  };
+
   const handleSubmit = async () => {
-    if (!fileName.trim() || !fileSize.trim()) return;
+    if (!fileName.trim() || !fileSize.trim() || error) return;
 
     try {
       await createDocument.mutateAsync({
@@ -29,6 +44,7 @@ export default function UploadDialog({ open, onClose, folderId }: DialogProps) {
       });
       setFileName('');
       setFileSize('');
+      setError('');
       onClose();
     } catch (error) {
       console.error('Failed to upload document:', error);
@@ -38,6 +54,7 @@ export default function UploadDialog({ open, onClose, folderId }: DialogProps) {
   const handleClose = () => {
     setFileName('');
     setFileSize('');
+    setError('');
     onClose();
   };
 
@@ -53,7 +70,9 @@ export default function UploadDialog({ open, onClose, folderId }: DialogProps) {
             fullWidth
             variant="outlined"
             value={fileName}
-            onChange={(e) => setFileName(e.target.value)}
+            onChange={(e) => handleInputChange(e.target.value)}
+            error={!!error}
+            helperText={error || 'Only English letters, numbers, dots, and underscores allowed'}
           />
           <TextField
             label="File Size (KB)"
@@ -71,7 +90,7 @@ export default function UploadDialog({ open, onClose, folderId }: DialogProps) {
         <Button
           onClick={handleSubmit}
           variant="contained"
-          disabled={!fileName.trim() || !fileSize.trim() || createDocument.isPending}
+          disabled={!fileName.trim() || !fileSize.trim() || !!error || createDocument.isPending}
         >
           {createDocument.isPending ? 'Uploading...' : 'Upload'}
         </Button>

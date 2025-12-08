@@ -9,6 +9,7 @@ import FileDialog from "@/components/features/documents/dialog/FileDialog";
 import Search from "@/components/features/documents/search/Search";
 import Pagination from "@/components/features/documents/pagination/Pagination";
 import UploadDialog from "@/components/features/documents/dialog/UploadDialog";
+import DeleteConfirmDialog from "@/components/features/documents/dialog/DeleteConfirmDialog";
 
 export default function DocumentsPage() {
 
@@ -28,17 +29,22 @@ export default function DocumentsPage() {
     sortField,
     sortOrder,
     handleSort,
-    createFolderOpen,
-    setCreateFolderOpen,
+    folderDialogOpen,
+    setFolderDialogOpen,
+    initialFolderData,
     fileDialogOpen,
     setFileDialogOpen,
     initialFileData,
     uploadDialogOpen,
     setUploadDialogOpen,
+    deleteDialogOpen,
+    setDeleteDialogOpen,
+    itemToDelete,
     handleItemClick,
     handleRename,
     handleMove,
     handleDelete,
+    confirmDelete,
   } = useDocumentController()
 
   return itemsLoading ? (
@@ -50,7 +56,7 @@ export default function DocumentsPage() {
       <div className="max-w-7xl mx-auto">
         <Toolbar
           onUploadFiles={() => setUploadDialogOpen(true)}
-          onAddFolder={() => setCreateFolderOpen(true)}
+          onAddFolder={() => setFolderDialogOpen(true)}
         />
 
         <div className="mb-4">
@@ -80,8 +86,9 @@ export default function DocumentsPage() {
         />
 
         <FolderDialog
-          open={createFolderOpen}
-          onClose={() => setCreateFolderOpen(false)}
+          open={folderDialogOpen}
+          onClose={() => setFolderDialogOpen(false)}
+          initialData={initialFolderData}
         />
 
         <FileDialog
@@ -93,6 +100,13 @@ export default function DocumentsPage() {
         <UploadDialog
           open={uploadDialogOpen}
           onClose={() => setUploadDialogOpen(false)}
+        />
+
+        <DeleteConfirmDialog
+          open={deleteDialogOpen}
+          onClose={() => setDeleteDialogOpen(false)}
+          onConfirm={confirmDelete}
+          item={itemToDelete}
         />
       </div>
     </div>);
