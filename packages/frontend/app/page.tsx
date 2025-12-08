@@ -14,6 +14,7 @@ export default function DocumentsPage() {
 
   const {
     items,
+    total,
     itemsLoading,
     page,
     setPage,
@@ -57,7 +58,7 @@ export default function DocumentsPage() {
         </div>
 
         <Table
-          items={items.items}
+          items={items}
           selected={selected}
           onSelectAll={handleSelectAll}
           onSelectOne={handleSelectOne}
@@ -73,7 +74,7 @@ export default function DocumentsPage() {
         <Pagination
           page={page}
           rowsPerPage={rowsPerPage}
-          totalItems={items.length}
+          totalItems={total}
           onPageChange={setPage}
           onRowsPerPageChange={setRowsPerPage}
         />

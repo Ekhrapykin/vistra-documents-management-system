@@ -21,7 +21,17 @@ export function useDocumentController() {
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [initialFileData, setInitialFileData] = useState<InitialFileData | undefined>(undefined);
 
-  const {data: items =[], isLoading: itemsLoading} = useDMS();
+  const {data, isLoading: itemsLoading} = useDMS({
+    search: searchQuery,
+    page: page,
+    pageSize: rowsPerPage,
+    sortField: sortField,
+    sortOrder: sortOrder,
+  });
+
+  const items = data?.items || [];
+  const total = data?.total || 0;
+
   const deleteFolder = useDeleteFolder();
   const deleteDocument = useDeleteDocument();
 
@@ -90,6 +100,7 @@ export function useDocumentController() {
   };
   return {
     items,
+    total,
     itemsLoading,
     searchQuery,
     debouncedSearch,
