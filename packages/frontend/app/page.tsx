@@ -1,6 +1,5 @@
 'use client';
 
-import {CircularProgress} from '@mui/material';
 import Table from "@/components/features/documents/table/Table";
 import Toolbar from "@/components/features/documents/toolbar/Toolbar";
 import {useDocumentController} from "@/components/features/documents/controller";
@@ -12,7 +11,6 @@ import UploadDialog from "@/components/features/documents/dialog/UploadDialog";
 import DeleteConfirmDialog from "@/components/features/documents/dialog/DeleteConfirmDialog";
 
 export default function DocumentsPage() {
-
   const {
     items,
     total,
@@ -45,13 +43,9 @@ export default function DocumentsPage() {
     handleMove,
     handleDelete,
     confirmDelete,
-  } = useDocumentController()
+  } = useDocumentController();
 
-  return itemsLoading ? (
-    <div className="flex items-center justify-center min-h-screen">
-      <CircularProgress/>
-    </div>
-  ) : (
+  return (
     <div className="min-h-screen bg-zinc-50 p-8">
       <div className="max-w-7xl mx-auto">
         <Toolbar
@@ -63,19 +57,20 @@ export default function DocumentsPage() {
           <Search value={searchQuery} onChange={debouncedSearch}/>
         </div>
 
-        <Table
-          items={items}
-          selected={selected}
-          onSelectAll={handleSelectAll}
-          onSelectOne={handleSelectOne}
-          onSort={handleSort}
-          sortField={sortField}
-          sortOrder={sortOrder}
-          onItemClick={handleItemClick}
-          onRename={handleRename}
-          onMove={handleMove}
-          onDelete={handleDelete}
-        />
+          <Table
+            items={items}
+            selected={selected}
+            onSelectAll={handleSelectAll}
+            onSelectOne={handleSelectOne}
+            onSort={handleSort}
+            sortField={sortField}
+            sortOrder={sortOrder}
+            onItemClick={handleItemClick}
+            onRename={handleRename}
+            onMove={handleMove}
+            onDelete={handleDelete}
+            loading={itemsLoading}
+          />
 
         <Pagination
           page={page}
@@ -109,6 +104,6 @@ export default function DocumentsPage() {
           item={itemToDelete}
         />
       </div>
-    </div>);
+    </div>
+  );
 }
-

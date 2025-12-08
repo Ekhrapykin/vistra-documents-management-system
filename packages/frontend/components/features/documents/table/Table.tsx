@@ -3,6 +3,7 @@
 import {useState} from 'react';
 import {
   Checkbox,
+  CircularProgress,
   IconButton,
   Menu,
   MenuItem,
@@ -34,6 +35,7 @@ export default function TableControl({
   onRename,
   onMove,
   onDelete,
+  loading = false,
 }: TableProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [menuItem, setMenuItem] = useState<DocumentListItem | null>(null);
@@ -151,71 +153,81 @@ export default function TableControl({
           </TableHead>
 
           <TableBody>
-            {items.map((item) => {
-              const isSelected = selected.includes(item.id);
-
-              return (
-                <TableRow
-                  key={`${item.type}-${item.id}`}
-                  hover
-                  selected={isSelected}
-                  sx={{ cursor: 'pointer' }}
-                >
-                  <TableCell padding="checkbox">
-                    <Checkbox
-                      checked={isSelected}
-                      onChange={(e) => {
-                        e.stopPropagation();
-                        onSelectOne(item.id, e.target.checked);
-                      }}
-                    />
-                  </TableCell>
-
-                  <TableCell onClick={() => onItemClick(item)}>
-                    <div className="flex items-center gap-2">
-                      {item.type === 'folder' ? (
-                        <FolderIcon sx={{ color: '#f59e0b' }} />
-                      ) : (
-                        <DescriptionIcon sx={{ color: '#3b82f6' }} />
-                      )}
-                      <span className="text-sm text-gray-800 hover:underline">
-                        {item.name}
-                      </span>
-                    </div>
-                  </TableCell>
-
-                  <TableCell>
-                    <span className="text-sm text-gray-600">{item.created_by}</span>
-                  </TableCell>
-
-                  <TableCell>
-                    <span className="text-sm text-gray-600">{formatDate(item.created_at)}</span>
-                  </TableCell>
-
-                  <TableCell>
-                    <span className="text-sm text-gray-600">
-                      {item.type === 'folder' ? '-' : formatFileSize(item.file_size_bytes || 0)}
-                    </span>
-                  </TableCell>
-
-                  <TableCell align="center">
-                    <IconButton
-                      size="small"
-                      onClick={(e) => handleMenuOpen(e, item)}
-                    >
-                      <MoreVertIcon />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-
-            {items.length === 0 && (
+            {loading ? (
               <TableRow>
                 <TableCell colSpan={6} align="center" className="py-12">
-                  <p className="text-gray-500">No items found</p>
+                  <CircularProgress />
                 </TableCell>
               </TableRow>
+            ) : (
+              <>
+                {items.map((item) => {
+                  const isSelected = selected.includes(item.id);
+
+                  return (
+                    <TableRow
+                      key={`${item.type}-${item.id}`}
+                      hover
+                      selected={isSelected}
+                      sx={{ cursor: 'pointer' }}
+                    >
+                      <TableCell padding="checkbox">
+                        <Checkbox
+                          checked={isSelected}
+                          onChange={(e) => {
+                            e.stopPropagation();
+                            onSelectOne(item.id, e.target.checked);
+                          }}
+                        />
+                      </TableCell>
+
+                      <TableCell onClick={() => onItemClick(item)}>
+                        <div className="flex items-center gap-2">
+                          {item.type === 'folder' ? (
+                            <FolderIcon sx={{ color: '#f59e0b' }} />
+                          ) : (
+                            <DescriptionIcon sx={{ color: '#3b82f6' }} />
+                          )}
+                          <span className="text-sm text-gray-800 hover:underline">
+                            {item.name}
+                          </span>
+                        </div>
+                      </TableCell>
+
+                      <TableCell>
+                        <span className="text-sm text-gray-600">{item.created_by}</span>
+                      </TableCell>
+
+                      <TableCell>
+                        <span className="text-sm text-gray-600">{formatDate(item.created_at)}</span>
+                      </TableCell>
+
+                      <TableCell>
+                        <span className="text-sm text-gray-600">
+                          {item.type === 'folder' ? '-' : formatFileSize(item.file_size_bytes || 0)}
+                        </span>
+                      </TableCell>
+
+                      <TableCell align="center">
+                        <IconButton
+                          size="small"
+                          onClick={(e) => handleMenuOpen(e, item)}
+                        >
+                          <MoreVertIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+
+                {items.length === 0 && (
+                  <TableRow>
+                    <TableCell colSpan={6} align="center" className="py-12">
+                      <p className="text-gray-500">No items found</p>
+                    </TableCell>
+                  </TableRow>
+                )}
+              </>
             )}
           </TableBody>
         </Table>
@@ -235,4 +247,3 @@ export default function TableControl({
     </>
   );
 }
-

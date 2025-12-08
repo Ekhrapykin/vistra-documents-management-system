@@ -12,4 +12,5 @@ export interface TableProps {
   onRename: (item: DocumentListItem) => void;
   onMove: (item: DocumentListItem) => void;
   onDelete: (item: DocumentListItem) => void;
+  loading?: boolean;
 }
