@@ -1,4 +1,4 @@
-import {useCallback, useState} from "react";
+import {useMemo, useState} from "react";
 import {DocumentListItem, SortField, SortOrder} from "@/types";
 import {useDeleteDocument, useDeleteFolder, useDMS} from "@/hooks";
 import {debounce} from "@/lib";
@@ -19,18 +19,19 @@ export function useDocumentController() {
   const [createFolderOpen, setCreateFolderOpen] = useState(false);
   const [fileDialogOpen, setFileDialogOpen] = useState(false);
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
-  const [initialFileData, setInitialFileData] = useState<InitialFileData | null>(null);
+  const [initialFileData, setInitialFileData] = useState<InitialFileData | undefined>(undefined);
 
   const {data: items =[], isLoading: itemsLoading} = useDMS();
   const deleteFolder = useDeleteFolder();
   const deleteDocument = useDeleteDocument();
 
   // Debounced search handler
-  const debouncedSearch = useCallback(
-    debounce((value: string) => {
-      setSearchQuery(value);
-      setPage(1); // Reset to first page on search
-    }, 300),
+  const debouncedSearch = useMemo(
+    () =>
+      debounce((value: string) => {
+        setSearchQuery(value);
+        setPage(1); // Reset to first page on search
+      }, 300),
     []
   );
 
@@ -44,7 +45,7 @@ export function useDocumentController() {
   };
 
   const handleSelectAll = (checked: boolean) => {
-    setSelected(checked ? items.map((item: { id: any; }) => item.id) : []);
+    setSelected(checked ? items.map((item: { id: number; }) => item.id) : []);
   };
 
   const handleSelectOne = (id: number, checked: boolean) => {

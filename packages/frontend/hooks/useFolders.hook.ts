@@ -1,4 +1,4 @@
-import {QueryClient, useMutation, useQueryClient} from '@tanstack/react-query';
+import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {foldersService} from '@/services';
 import {CreateFolderDto, UpdateFolderDto} from '@/types';
 import {invalidate} from "./useDMS.hook";

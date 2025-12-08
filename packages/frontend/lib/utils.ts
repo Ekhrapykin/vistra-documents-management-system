@@ -26,7 +26,7 @@ export function formatDate(dateString: string): string {
 /**
  * Debounce function for search
  */
-export function debounce<T extends (...args: any[]) => any>(
+export function debounce<T extends (...args:never[]) => void>(
   func: T,
   wait: number
 ): (...args: Parameters<T>) => void {

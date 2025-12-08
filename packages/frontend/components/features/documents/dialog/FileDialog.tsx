@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -12,46 +12,32 @@ import {
 import { useCreateDocument, useUpdateDocument } from '@/hooks';
 import DialogProps from "./Dialog.props";
 
-export default function FileDialog({ open, onClose, folderId, initialData }: DialogProps) {
+function FileDialogContent({ open, onClose, initialData }: DialogProps) {
   const [fileName, setFileName] = useState(initialData?.fileName || '');
-  const [fileSize, setFileSize] = useState(initialData?.fileSize || '');
+  const [fileSize] = useState(initialData?.fileSize || '');
   const createDocument = useCreateDocument();
   const updateDocument = useUpdateDocument();
 
-  // Update state when initialData changes
-  useEffect(() => {
-    if (open) {
-      setFileName(initialData?.fileName || '');
-      setFileSize(initialData?.fileSize || '');
-    }
-  }, [open, initialData]);
-
   const handleSubmit = async () => {
-    if (!fileName.trim()) return;
+    if (!fileName.trim() || !initialData?.id) return;
 
     try {
-        await updateDocument.mutateAsync({
-          id: initialData?.id!,
-          data: {
-            name: fileName,
-          },
-        });
-      handleClose();
+      await updateDocument.mutateAsync({
+        id: initialData.id,
+        data: {
+          name: fileName,
+        },
+      });
+      onClose();
     } catch (error) {
       console.error(`Failed to update document:`, error);
     }
   };
 
-  const handleClose = () => {
-    setFileName('');
-    setFileSize('');
-    onClose();
-  };
-
   const isPending = createDocument.isPending || updateDocument.isPending;
 
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>Rename Document</DialogTitle>
       <DialogContent>
         <div className="flex flex-col gap-4 mt-2">
@@ -76,7 +62,7 @@ export default function FileDialog({ open, onClose, folderId, initialData }: Dia
         </div>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose}>Cancel</Button>
+        <Button onClick={onClose}>Cancel</Button>
         <Button
           onClick={handleSubmit}
           variant="contained"
@@ -87,5 +73,10 @@ export default function FileDialog({ open, onClose, folderId, initialData }: Dia
       </DialogActions>
     </Dialog>
   );
+}
+
+export default function FileDialog(props: DialogProps) {
+  // Use key prop to reset component state when initialData changes
+  return <FileDialogContent {...props} key={props.initialData?.id || 'new'} />;
 }
 
