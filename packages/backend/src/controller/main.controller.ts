@@ -2,10 +2,12 @@ import knex from "../db/knex";
 import {Document, Folder} from "../types";
 
 export const mainController = {
-  queryAll: async (options?: { search?: string; page?: number; pageSize?: number }) => {
+  queryAll: async (options?: { search?: string; page?: number; pageSize?: number; sortField?: string; sortOrder?: string }) => {
     const search = options?.search?.trim() || '';
     const page = options?.page && options?.page > 0 ? options.page : 1;
     const pageSize = options?.pageSize && options.pageSize > 0 ? options.pageSize : 25;
+    const sortField = options?.sortField || 'name';
+    const sortOrder = options?.sortOrder?.toLowerCase() === 'desc' ? 'desc' : 'asc';
     const offset = (page - 1) * pageSize;
 
     // Build base queries
@@ -46,10 +48,20 @@ export const mainController = {
     ]);
     const total = Number(foldersCountResult[0].count) + Number(documentsCountResult[0].count);
 
+    // Map frontend field names to database field names
+    const fieldMap: Record<string, string> = {
+      'name': 'name',
+      'created_by': 'created_by',
+      'created_at': 'created_at',
+      'file_size_bytes': 'size',
+    };
+
+    const dbSortField = fieldMap[sortField] || 'name';
+
     // Union, order, and paginate
     const items = await knex
       .unionAll([foldersQuery, documentsQuery])
-      .orderBy('name', 'asc')
+      .orderBy(dbSortField, sortOrder)
       .limit(pageSize)
       .offset(offset);
 
@@ -60,6 +72,8 @@ export const mainController = {
       total,
       totalPages: Math.ceil(total / pageSize),
       search,
+      sortField,
+      sortOrder,
     };
   }
 }

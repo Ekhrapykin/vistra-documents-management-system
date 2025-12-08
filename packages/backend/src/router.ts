@@ -7,16 +7,24 @@ const router = Router();
 router
   .get('/', async (req: Request, res: Response) => {
     try {
-      const { search = '', page = 1, pageSize = 25 } = req.query;
+      const {
+        search = '',
+        page = 1,
+        pageSize = 25,
+        sortField = 'name',
+        sortOrder = 'asc'
+      } = req.query;
       const result = await mainController.queryAll({
         search: search.toString(),
         page: Number(page),
         pageSize: Number(pageSize),
+        sortField: sortField.toString(),
+        sortOrder: sortOrder.toString(),
       });
       return res.json(result);
     } catch (error) {
-      console.error('Error fetching folders:', error);
-      return res.status(500).json({ error: 'Failed to fetch folders' });
+      console.error('Error fetching items:', error);
+      return res.status(500).json({ error: 'Failed to fetch items' });
     }
   })
   .post('/folders', async (req: Request, res: Response) => {
