@@ -1,36 +1,228 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Vistra Documents Management System - Frontend
 
-## Getting Started
+A modern document management system built with Next.js 16 + TypeScript + Material UI + TailwindCSS.
 
-First, run the development server:
+## Tech Stack
+
+- **Framework**: Next.js 16
+- **Language**: TypeScript
+- **UI Library**: Material UI (MUI)
+- **Styling**: TailwindCSS v4
+- **State Management**: React Query (TanStack Query)
+- **HTTP Client**: Axios
+- **Date Formatting**: date-fns
+- **Build Tool**: Next.js (with SWC)
+
+## Project Structure
+
+```
+frontend/
+├── app/                          # Next.js App Router
+│   ├── layout.tsx               # Root layout with providers and header
+│   ├── page.tsx                 # Homepage (redirects to /documents)
+│   ├── globals.css              # Global styles
+│   └── documents/               # Documents management
+│       └── page.tsx             # Main documents page
+├── components/                  # React components
+│   ├── Providers.tsx            # React Query + MUI Theme providers
+│   ├── features/                # Feature-specific components
+│   │   └── documents/
+│   │       ├── controller.ts    # State management and handlers
+│   │       ├── dialog/          # Dialog components
+│   │       │   ├── DeleteConfirmDialog.tsx
+│   │       │   ├── Dialog.props.ts
+│   │       │   ├── FileDialog.tsx
+│   │       │   ├── FolderDialog.tsx
+│   │       │   ├── UploadDialog.tsx
+│   │       ├── pagination/      # Pagination components
+│   │       │   ├── Pagination.props.ts
+│   │       │   ├── Pagination.tsx
+│   │       ├── search/          # Search components
+│   │       │   ├── Search.props.ts
+│   │       │   ├── Search.tsx
+│   │       ├── table/           # Table components
+│   │       │   ├── dialog/      # Table-specific dialogs
+│   │       │   │   ├── NoticeDialog.tsx
+│   │       │   │   ├── PreviewDialog.tsx
+│   │       │   ├── Table.props.ts
+│   │       │   ├── Table.tsx
+│   │       ├── toolbar/         # Toolbar components
+│   │       │   ├── Toolbar.props.ts
+│   │       │   ├── Toolbar.tsx
+│   ├── layout/                  # Layout components
+│   │   └── Header.tsx           # App header with title
+│   └── ui/                      # Reusable UI components (future)
+├── hooks/                       # Custom React hooks
+│   ├── index.ts                 # Hook exports
+│   ├── useDMS.hook.ts           # Combined DMS data hook
+│   ├── useDocuments.hook.ts     # Document-specific hooks
+│   └── useFolders.hook.ts       # Folder-specific hooks
+├── lib/                         # Utility functions
+│   ├── api.ts                   # Axios instance configuration
+│   ├── index.ts                 # Utility exports
+│   └── utils.ts                 # Helper functions (formatFileSize, debounce, etc.)
+├── services/                    # API service layer
+│   ├── index.ts                 # Service exports
+│   ├── dms.service.ts           # Combined DMS API calls
+│   ├── documents.service.ts     # Document API endpoints
+│   └── folders.service.ts       # Folder API endpoints
+├── types/                       # TypeScript type definitions
+│   ├── index.ts                 # Main type exports
+│   ├── CreateDocumentDto.type.ts
+│   ├── CreateFolderDto.type.ts
+│   ├── Dialog.type.ts
+│   ├── Document.type.ts
+│   ├── DocumentListItem.enum.ts
+│   ├── DocumentListItem.type.ts
+│   ├── Folder.type.ts
+│   ├── SortField.enum.ts
+│   ├── SortOrder.enum.ts
+│   ├── UpdateDocumentDto.type.ts
+│   └── UpdateFolderDto.type.ts
+├── public/                      # Static assets
+│   ├── favicon.ico
+│   ├── file.svg
+│   ├── globe.svg
+│   ├── next.svg
+│   ├── vercel.svg
+│   └── window.svg
+├── eslint.config.mjs            # ESLint configuration
+├── next.config.ts               # Next.js configuration
+├── package.json
+├── postcss.config.mjs           # PostCSS configuration
+├── tailwind.config.ts           # TailwindCSS configuration
+├── tsconfig.json                # TypeScript configuration
+└── tsconfig.tsbuildinfo         # TypeScript build info
+```
+
+## Features
+
+### Implemented
+
+- **Document & Folder Management**
+    - View all folders and documents in a unified table
+    - Create new folders
+    - Upload documents (simulated with file size calculation)
+    - Update folder/document
+
+- **UI Features**
+    - Sortable table columns (name, created by, date, file size)
+    - Search/filter functionality with debouncing
+    - Pagination (10, 25, 50, 100 rows per page)
+    - Bulk selection with checkboxes
+    - Row-level actions menu (Rename, Move, Delete)
+    - Item click interactions:
+        - Click document: Show basic file preview popup
+        - Click folder: Show notice popup for nested folder navigation
+        - Move action: Show notice popup (functionality under construction)
+    - Responsive design
+    - Material UI theming
+    - App header with system title
+
+- **Performance**
+    - React Query for data caching and automatic refetching
+    - Optimistic updates
+    - Debounced search (300ms)
+
+### Future Enhancements
+
+- Folder navigation (drill-down into folders)
+- Real file upload with multipart/form-data
+- Move dialogs
+- Folder tree view in sidebar
+- Advanced search and filters
+- Drag & drop file upload
+- Document preview
+- User authentication
+- Role-based permissions
+- Breadcrumb navigation
+
+## Environment Variables
+
+Create a `.env.local` file in the frontend directory:
+
+```dotenv
+NEXT_PUBLIC_API_URL=http://localhost:3001
+```
+
+## Available Scripts
+
+- `npm run dev` - Start the development server
+- `npm run build` - Build the application for production
+- `npm start` - Start the production server
+- `npm run lint` - Run ESLint to check code quality
+
+## How to start server:
+
+1. Install dependencies
+
+```bash
+npm install
+```
+
+2. Start the development server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The application will be available at `http://localhost:3000`
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Build
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Build for production:
 
-## Learn More
+```bash
+npm run build
+```
 
-To learn more about Next.js, take a look at the following resources:
+2. Start production server:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm start
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Component Architecture
 
-## Deploy on Vercel
+### Page Components
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **app/page.tsx**: Main documents page with state management and data fetching
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Feature Components
+
+- **Toolbar**: Actions bar with "Upload files" and "Add new folder" buttons
+- **Search**: Search input with icon and debouncing
+- **Table**: Data table with sorting, selection, and actions
+- **Pagination**: Pagination with rows-per-page selector
+- **FolderDialog**: Modal for creating/editing folders
+- **UploadDialog**: Modal for uploading documents
+- **DeleteConfirmDialog**: Modal for confirming deletions
+- **PreviewDialog**: Modal for basic file preview
+- **NoticeDialog**: Modal for informational notices
+
+### Custom Hooks
+
+- **useDMS.hook.ts**: React Query hook for combined DMS data
+- **useDocuments.hook.ts**: React Query hooks for document operations
+- **useFolders.hook.ts**: React Query hooks for folder operations
+
+### Services
+
+- **dms.service.ts**: API calls for combined DMS endpoints
+- **documents.service.ts**: API calls for document endpoints
+- **folders.service.ts**: API calls for folder endpoints
+
+## Code Quality
+
+- ESLint configured with Next.js recommended rules
+- TypeScript strict mode enabled
+- Component-based architecture
+- Separation of concerns (UI, Logic, API)
+- Custom hooks for reusability
+
+## Browser Support
+
+- Chrome (latest)
+- Firefox (latest)
+- Safari (latest)
+- Edge (latest)

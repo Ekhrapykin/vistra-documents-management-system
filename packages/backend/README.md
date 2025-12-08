@@ -49,7 +49,7 @@ backend/
 
 Create a `.env` file in this package (or set environment variables in your environment) with the values below:
 
-```
+```dotenv
 NODE_ENV=dev
 PORT=3001
 DATABASE_URL=mysql://root:mysql@localhost:3306/vistra_dms
