@@ -4,7 +4,6 @@ export type Document = {
   name: string;
   created_by: string;
   file_size_bytes: number;
-  is_deleted: boolean;
   created_at: string;
   updated_at: string;
 };

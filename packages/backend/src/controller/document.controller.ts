@@ -8,7 +8,7 @@ export const documentController = {
     // Validate folder_id exists if provided
     if (folder_id) {
       const [folder] = await knex<Folder>('folders')
-        .where({id: folder_id, is_deleted: false});
+        .where({id: folder_id});
 
       if (!folder) {
         return {
@@ -23,7 +23,6 @@ export const documentController = {
         folder_id: folder_id || null,
         created_by,
         file_size_bytes: file_size_bytes || 0,
-        is_deleted: false,
       })
     return knex('documents').where({id}).first();
 

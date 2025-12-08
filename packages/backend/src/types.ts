@@ -4,7 +4,6 @@ export interface Folder {
   parent_id: number | null;
   name: string;
   created_by: string;
-  is_deleted: boolean;
   created_at: Date;
   updated_at: Date;
 }
@@ -27,7 +26,6 @@ export interface Document {
   name: string;
   created_by: string;
   file_size_bytes: number;
-  is_deleted: boolean;
   created_at: Date;
   updated_at: Date;
 }

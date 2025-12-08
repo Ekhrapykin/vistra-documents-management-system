@@ -6,7 +6,7 @@ export const folderController = {
     // Validate parent_id exists if provided
     if (parent_id) {
       const [parent] = await knex<Folder>('folders')
-        .where({id: parent_id, is_deleted: false});
+        .where({id: parent_id});
 
       if (!parent) {
         return {
@@ -20,7 +20,6 @@ export const folderController = {
         name,
         parent_id: parent_id || null,
         created_by,
-        is_deleted: false,
       });
     return knex('folders').where({id}).first();
 
