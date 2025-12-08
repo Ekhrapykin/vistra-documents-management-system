@@ -7,7 +7,7 @@ import ToolbarProps from "./Toolbar.props";
 
 export default function Toolbar({onUploadFiles, onAddFolder}: ToolbarProps) {
   return (
-    <div className="flex items-center justify-between mb-6">
+    <div className="flex items-center justify-between">
       <div className="flex gap-3">
         <Button
           variant="outlined"
