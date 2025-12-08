@@ -18,7 +18,7 @@ export const mainController = {
         name: 'name',
         created_by: 'created_by',
         created_at: 'created_at',
-        size: knex.raw('0'),
+        file_size_bytes: knex.raw('0'),
         type: knex.raw('\'folder\'')
       });
     let documentsQuery = knex<Document>('documents')
@@ -28,7 +28,7 @@ export const mainController = {
         name: 'name',
         created_by: 'created_by',
         created_at: 'created_at',
-        size: 'file_size_bytes',
+        file_size_bytes: 'file_size_bytes',
         type: knex.raw('\'document\'')
       });
 
@@ -48,20 +48,10 @@ export const mainController = {
     ]);
     const total = Number(foldersCountResult[0].count) + Number(documentsCountResult[0].count);
 
-    // Map frontend field names to database field names
-    const fieldMap: Record<string, string> = {
-      'name': 'name',
-      'created_by': 'created_by',
-      'created_at': 'created_at',
-      'file_size_bytes': 'size',
-    };
-
-    const dbSortField = fieldMap[sortField] || 'name';
-
     // Union, order, and paginate
     const items = await knex
       .unionAll([foldersQuery, documentsQuery])
-      .orderBy(dbSortField, sortOrder)
+      .orderBy(sortField, sortOrder)
       .limit(pageSize)
       .offset(offset);
 
