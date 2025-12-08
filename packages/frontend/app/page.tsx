@@ -9,6 +9,8 @@ import Search from "@/components/features/documents/search/Search";
 import Pagination from "@/components/features/documents/pagination/Pagination";
 import UploadDialog from "@/components/features/documents/dialog/UploadDialog";
 import DeleteConfirmDialog from "@/components/features/documents/dialog/DeleteConfirmDialog";
+import PreviewDialog from "@/components/features/documents/table/dialog/PreviewDialog";
+import NoticeDialog from "@/components/features/documents/table/dialog/NoticeDialog";
 
 export default function DocumentsPage() {
   const {
@@ -43,6 +45,13 @@ export default function DocumentsPage() {
     handleMove,
     handleDelete,
     confirmDelete,
+    previewDialogOpen,
+    setPreviewDialogOpen,
+    previewItem,
+    noticeDialogOpen,
+    setNoticeDialogOpen,
+    noticeTitle,
+    noticeMessage,
   } = useDocumentController();
 
   return (
@@ -102,6 +111,19 @@ export default function DocumentsPage() {
           onClose={() => setDeleteDialogOpen(false)}
           onConfirm={confirmDelete}
           item={itemToDelete}
+        />
+
+        <PreviewDialog
+          open={previewDialogOpen}
+          item={previewItem}
+          onCloseAction={() => setPreviewDialogOpen(false)}
+        />
+
+        <NoticeDialog
+          open={noticeDialogOpen}
+          title={noticeTitle}
+          message={noticeMessage}
+          onCloseAction={() => setNoticeDialogOpen(false)}
         />
       </div>
     </div>

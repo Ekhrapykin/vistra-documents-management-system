@@ -17,6 +17,11 @@ export function useDocumentController() {
   const [itemToDelete, setItemToDelete] = useState<DocumentListItem | undefined>(undefined);
   const [initialFileData, setInitialFileData] = useState<InitialFileData | undefined>(undefined);
   const [initialFolderData, setInitialFolderData] = useState<InitialFolderData | undefined>(undefined);
+  const [previewDialogOpen, setPreviewDialogOpen] = useState(false);
+  const [previewItem, setPreviewItem] = useState<DocumentListItem | undefined>(undefined);
+  const [noticeDialogOpen, setNoticeDialogOpen] = useState(false);
+  const [noticeTitle, setNoticeTitle] = useState<string | undefined>(undefined);
+  const [noticeMessage, setNoticeMessage] = useState<string | undefined>(undefined);
 
   const {data, isLoading: itemsLoading} = useDMS({
     search: searchQuery,
@@ -64,8 +69,14 @@ export function useDocumentController() {
   };
 
   const handleItemClick = (item: DocumentListItem) => {
-    console.log('Item clicked:', item);
-    // TODO: Navigate to folder or open document details
+    if (item.type === 'document') {
+      setPreviewItem(item);
+      setPreviewDialogOpen(true);
+    } else {
+      setNoticeTitle(item.name);
+      setNoticeMessage('Open nested folder is under contruction');
+      setNoticeDialogOpen(true);
+    }
   };
 
   const handleRename = (item: DocumentListItem) => {
@@ -86,8 +97,9 @@ export function useDocumentController() {
   };
 
   const handleMove = (item: DocumentListItem) => {
-    console.log('Move:', item);
-    // TODO: Implement move dialog
+    setNoticeTitle(`Move ${item.type}: ${item.name}`);
+    setNoticeMessage('Functionality is under construction. Stay tuned!');
+    setNoticeDialogOpen(true);
   };
 
   const handleDelete = (item: DocumentListItem) => {
@@ -142,5 +154,12 @@ export function useDocumentController() {
     deleteDialogOpen,
     setDeleteDialogOpen,
     itemToDelete,
+    previewDialogOpen,
+    setPreviewDialogOpen,
+    previewItem,
+    noticeDialogOpen,
+    setNoticeDialogOpen,
+    noticeTitle,
+    noticeMessage,
   };
 }
