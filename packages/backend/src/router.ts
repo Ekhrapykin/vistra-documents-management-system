@@ -127,7 +127,7 @@ router
     try {
       const {id} = req.params;
 
-      const deleted = await folderController.delete(Number(id));
+      const deleted = await documentController.delete(Number(id));
       if (deleted && 'error' in deleted) {
         return res.status(400).json({error: deleted.error});
       } else {
