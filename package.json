@@ -3,12 +3,20 @@
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
-  "scripts": {
-    "build": "tsc"
-  },
   "workspaces": [
     "packages/*"
   ],
+  "scripts": {
+    "frontend:dev": "npm run dev --workspace=packages/frontend",
+    "frontend:build": "npm run build --workspace=packages/frontend",
+    "frontend:start": "npm run start --workspace=packages/frontend",
+    "backend:dev": "npm run dev --workspace=packages/backend",
+    "backend:build": "npm run build --workspace=packages/backend",
+    "backend:migrate:latest": "npm run migrate:latest --workspace=packages/backend",
+    "backend:db:up": "npm run db:up --workspace=packages/backend",
+    "backend:db:down": "npm run db:down --workspace=packages/backend",
+    "backend:db:restart": "npm run db:restart --workspace=packages/backend"
+  },
   "dependencies": {},
   "devDependencies": {
     "typescript": "^5.5.3"
