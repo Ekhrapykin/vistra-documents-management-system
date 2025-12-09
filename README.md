@@ -6,6 +6,13 @@ A modern full-stack document management system built with Next.js + React + Type
 1. User authentication - is not required - “CreatedBy” field is hardcoded value
 2. There is no actions on check-boxes - no group actions
 3. Nesting is not required
+4. Sorting works regardless item type (folder/document)
+5. File upload is simulated - no real file storage, only file size is calculated and stored
+6. Document preview is basic popup - no real file preview functionality
+7. Move action is under construction - only notice popup is shown
+8. Folder navigation is not implemented - clicking folder shows notice popup
+9. Search is on current level only - no recursive search in subfolders
+10. Input validation is basic: english letters, numbers, dot and underscore
 
 _For more details refer to the future enhancements section below._
 
