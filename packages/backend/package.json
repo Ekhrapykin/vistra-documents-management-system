@@ -3,10 +3,9 @@
   "version": "1.0.0",
   "description": "Backend API service",
   "main": "dist/index.js",
-  "type": "module",
   "scripts": {
     "dev": "nodemon --watch 'src/**/*.ts' --exec 'tsx' src/index.ts",
-    "build": "tsc",
+    "build": "rm -rf ./dist && tsc",
     "start": "node dist/index.js",
     "migrate:latest": "knex --knexfile src/db/knexfile.ts migrate:latest",
     "migrate:up": "knex --knexfile src/db/knexfile.ts migrate:up",
