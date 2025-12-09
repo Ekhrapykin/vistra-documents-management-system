@@ -7,7 +7,7 @@ servers:
   - url: http://localhost:3001
     description: Development server
 paths:
-  /:
+  /api/dms:
     get:
       summary: Retrieve a list of documents and folders
       parameters:
@@ -57,7 +57,7 @@ paths:
                     type: integer
         '500':
           description: Internal server error
-  /folders:
+  /api/dms/folders:
     post:
       summary: Create a new folder
       requestBody:
@@ -83,7 +83,7 @@ paths:
           description: Bad request
         '500':
           description: Internal server error
-  /folders/{id}:
+  /api/dms/folders/{id}:
     put:
       summary: Update a folder
       parameters:
@@ -125,7 +125,7 @@ paths:
           description: Bad request
         '500':
           description: Internal server error
-  /documents:
+  /api/dms/documents:
     post:
       summary: Create a new document
       requestBody:
@@ -153,7 +153,7 @@ paths:
           description: Bad request
         '500':
           description: Internal server error
-  /documents/{id}:
+  /api/dms/documents/{id}:
     put:
       summary: Update a document
       parameters:
@@ -195,4 +195,3 @@ paths:
           description: Bad request
         '500':
           description: Internal server error
-
