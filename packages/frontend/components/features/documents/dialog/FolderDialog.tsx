@@ -11,13 +11,9 @@ import {
 } from '@mui/material';
 import { useCreateFolder, useUpdateFolder } from '@/hooks';
 import DialogProps from "./Dialog.props";
+import {validateInput} from "@/lib";
 
-// Validation: Only English letters, numbers, dots, and underscores
-const validateInput = (value: string): boolean => {
-  return /^[a-zA-Z0-9._]+$/.test(value);
-};
-
-function FolderDialogContent({ open, onClose, parentId, initialData }: DialogProps) {
+export default function FolderDialog({ open, onClose, parentId, initialData }: DialogProps) {
   const [folderName, setFolderName] = useState(initialData?.folderName || '');
   const [error, setError] = useState('');
   const createFolder = useCreateFolder();
@@ -96,8 +92,8 @@ function FolderDialogContent({ open, onClose, parentId, initialData }: DialogPro
   );
 }
 
-export default function FolderDialog(props: DialogProps) {
-  // Use key prop to reset component state when initialData changes
-  return <FolderDialogContent {...props} key={props.initialData?.id || 'new'} />;
-}
+// export default function FolderDialog(props: DialogProps) {
+//   // Use key prop to reset component state when initialData changes
+//   return <FolderDialogContent {...props} key={props.initialData?.id || 'new'} />;
+// }
 

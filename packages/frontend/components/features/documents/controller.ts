@@ -111,11 +111,8 @@ export function useDocumentController() {
     if (!itemToDelete) return;
 
     try {
-      if (itemToDelete.type === 'folder') {
-        await deleteFolder.mutateAsync(itemToDelete.id);
-      } else {
-        await deleteDocument.mutateAsync(itemToDelete.id);
-      }
+      const hook = itemToDelete.type === 'folder' ? deleteFolder : deleteDocument;
+      await hook.mutateAsync(itemToDelete.id);
       setDeleteDialogOpen(false);
       setItemToDelete(undefined);
     } catch (error) {

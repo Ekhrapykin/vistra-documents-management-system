@@ -91,6 +91,7 @@ export default function DocumentsPage() {
         open={folderDialogOpen}
         onClose={() => setFolderDialogOpen(false)}
         initialData={initialFolderData}
+        key={initialFolderData ? initialFolderData.id : 'new'}
       />
 
       <FileDialog
