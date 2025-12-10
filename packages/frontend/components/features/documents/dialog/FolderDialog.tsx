@@ -91,9 +91,3 @@ export default function FolderDialog({ open, onClose, parentId, initialData }: D
     </Dialog>
   );
 }
-
-// export default function FolderDialog(props: DialogProps) {
-//   // Use key prop to reset component state when initialData changes
-//   return <FolderDialogContent {...props} key={props.initialData?.id || 'new'} />;
-// }
-
